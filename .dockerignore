@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+*.egg-info/
+
+# Dev & training artifacts
+runs/
+dataset/
+train.py
+detect_and_count.py
+diag_*.py
+diag_*.mp4
+*.log
+
+# Extra model weights (not needed in image)
+yolo26n.pt
+yolo26s.pt
+last.pt
+
+# Runtime data (bind-mounted as volumes)
+app/uploads/
+app/outputs/
+
+# Secrets — set these via docker-compose environment: instead
+.env
+
+# IDE / OS
+.claude/
+.git/
+.gitignore
+*.DS_Store
+Thumbs.db

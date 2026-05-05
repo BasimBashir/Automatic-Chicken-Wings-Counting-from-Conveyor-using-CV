@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <title>Wing Counter - Image Detection</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <span class="logo">WingCounter</span>
+        <a href="/" class="active">Image</a>
+        <a href="/video.html">Video</a>
+        <a href="/stream.html">Stream</a>
+    </nav>
+
+    <div class="container">
+        <h1 class="page-title">Image Detection</h1>
+        <p class="page-subtitle">Upload an image to detect and count chicken wings</p>
+
+        <div class="card">
+            <div class="upload-zone" id="uploadZone">
+                <div class="icon">&#128444;</div>
+                <div class="label">Drop image here or click to browse</div>
+                <div class="hint">JPG, PNG, BMP, WEBP</div>
+                <input type="file" id="fileInput" accept="image/*" hidden>
+            </div>
+        </div>
+
+        <div id="results" style="display:none;">
+            <div class="stats-panel" style="margin-bottom: 24px;">
+                <div class="stat">
+                    <div class="value green" id="wingCount">0</div>
+                    <div class="label">Wings Detected</div>
+                </div>
+            </div>
+
+            <div class="result-grid">
+                <div>
+                    <h3 style="margin-bottom: 12px; color: var(--text-dim);">Original</h3>
+                    <img id="originalImg" src="" alt="Original">
+                </div>
+                <div>
+                    <h3 style="margin-bottom: 12px; color: var(--text-dim);">Annotated</h3>
+                    <img id="annotatedImg" src="" alt="Annotated">
+                </div>
+            </div>
+
+            <div class="controls" style="margin-top: 16px;">
+                <a id="downloadBtn" class="btn btn-primary" download="annotated.jpg">Download Annotated</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/image.js"></script>
+</body>
+</html>

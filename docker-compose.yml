@@ -1,0 +1,32 @@
+services:
+  wing-counter:
+    image: basim123/chickens-wings-counter:latest
+    build: .
+    ports:
+      - "5580:5580"
+    volumes:
+      - ./app/uploads:/app/app/uploads
+      - ./app/outputs:/app/app/outputs
+    environment:
+      - RTSP_URL=${RTSP_URL:-}
+      - MODEL_PATH=${MODEL_PATH:-best.pt}
+      - ROI_POSITION=${ROI_POSITION:-0.7}
+      - CONFIDENCE=${CONFIDENCE:-0.25}
+      - NMS_IOU=${NMS_IOU:-0.45}
+      - IMGSZ=${IMGSZ:-640}
+      - MAX_DISTANCE=${MAX_DISTANCE:-50}
+      - MAX_DISAPPEARED=${MAX_DISAPPEARED:-15}
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5580/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped

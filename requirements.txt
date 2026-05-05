@@ -1,0 +1,21 @@
+--extra-index-url https://download.pytorch.org/whl/cu126
+torch
+torchvision
+opencv-python-headless
+numpy
+pillow
+scipy
+ultralytics
+pandas
+tqdm
+seaborn
+fastapi
+uvicorn[standard]
+python-multipart
+pydantic-settings
+python-dotenv
+# TensorRT export deps — pre-installed so ultralytics auto-update never runs
+onnx>=1.12.0,<2.0.0
+onnxslim>=0.1.71
+onnxruntime-gpu
+tensorrt

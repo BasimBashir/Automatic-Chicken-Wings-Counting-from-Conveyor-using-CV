@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <title>Wing Counter - Video Processing</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <span class="logo">WingCounter</span>
+        <a href="/">Image</a>
+        <a href="/video.html" class="active">Video</a>
+        <a href="/stream.html">Stream</a>
+    </nav>
+
+    <div class="container">
+        <h1 class="page-title">Video Processing</h1>
+        <p class="page-subtitle">Upload a video to detect, track, and count chicken wings crossing the ROI line</p>
+
+        <div class="card" id="uploadCard">
+            <div class="upload-zone" id="uploadZone">
+                <div class="icon">&#127910;</div>
+                <div class="label">Drop video here or click to browse</div>
+                <div class="hint">MP4, AVI, MOV, MKV</div>
+                <input type="file" id="fileInput" accept="video/*" hidden>
+            </div>
+        </div>
+
+        <div id="playerSection" style="display:none;">
+            <div class="controls">
+                <button class="btn btn-success" id="btnPlay">Play</button>
+                <button class="btn btn-danger" id="btnStop" disabled>Stop</button>
+                <span style="width:1px; height:24px; background:var(--border);"></span>
+                <button class="btn btn-primary" id="btnCountStart" disabled>Start Counting</button>
+                <button class="btn btn-outline" id="btnCountStop" disabled>Stop Counting</button>
+                <span style="flex:1;"></span>
+                <span class="status-dot inactive" id="statusDot"></span>
+                <span style="font-size:13px; color:var(--text-dim);" id="statusLabel">Stopped</span>
+            </div>
+
+            <div class="feed-container">
+                <img id="feedImg" style="display:none;" alt="Video Feed">
+                <span class="feed-placeholder" id="feedPlaceholder">Click Play to start</span>
+            </div>
+
+            <div class="stats-panel">
+                <div class="stat">
+                    <div class="value green" id="wingCount">0</div>
+                    <div class="label">Wings Counted</div>
+                </div>
+                <div class="stat">
+                    <div class="value accent" id="frameNum">0</div>
+                    <div class="label">Frame</div>
+                </div>
+                <div class="stat">
+                    <div class="value amber" id="fpsVal">0</div>
+                    <div class="label">FPS</div>
+                </div>
+            </div>
+
+            <div class="controls" style="margin-top: 20px;">
+                <a class="btn btn-primary" id="downloadBtn" style="display:none;" download>Download Output (H.264)</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/video.js"></script>
+</body>
+</html>
