@@ -85,53 +85,6 @@ def draw_crossing_flash(img, cx, cy, intensity):
     cv2.addWeighted(overlay, alpha, img, 1 - alpha, 0, img)
 
 
-def draw_dashboard(img, total_count, in_frame, total_tracked, frame_num,
-                   total_frames, is_stream, fps_display, width):
-    panel_w = 300
-    panel_h = 130
-    margin = 8
-    draw_rounded_rect(
-        img, (margin, margin), (margin + panel_w, margin + panel_h),
-        COLORS["panel_bg"], radius=10, alpha=0.88
-    )
-    cv2.line(img, (margin + 10, margin + 2), (margin + panel_w - 10, margin + 2),
-             COLORS["accent"], 2, cv2.LINE_AA)
-    x0 = margin + 14
-    y0 = margin + 30
-    count_text = f"{total_count}"
-    cv2.putText(img, count_text, (x0, y0 + 5),
-                cv2.FONT_HERSHEY_SIMPLEX, 1.4, COLORS["counted"], 3, cv2.LINE_AA)
-    tw = cv2.getTextSize(count_text, cv2.FONT_HERSHEY_SIMPLEX, 1.4, 3)[0][0]
-    cv2.putText(img, "wings counted", (x0 + tw + 8, y0 + 5),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.55, COLORS["dim"], 1, cv2.LINE_AA)
-    cv2.line(img, (x0, y0 + 18), (x0 + panel_w - 30, y0 + 18),
-             COLORS["panel_border"], 1, cv2.LINE_AA)
-    y1 = y0 + 42
-    cv2.putText(img, f"In Frame: {in_frame}", (x0, y1),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.48, COLORS["white"], 1, cv2.LINE_AA)
-    cv2.putText(img, f"Tracked: {total_tracked}", (x0 + 140, y1),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.48, COLORS["accent"], 1, cv2.LINE_AA)
-    y2 = y1 + 24
-    if is_stream:
-        frame_text = f"Frame: {frame_num}"
-    else:
-        pct = (frame_num / total_frames * 100) if total_frames > 0 else 0
-        frame_text = f"Frame: {frame_num}/{total_frames} ({pct:.0f}%)"
-    cv2.putText(img, frame_text, (x0, y2),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.42, COLORS["very_dim"], 1, cv2.LINE_AA)
-    cv2.putText(img, f"FPS: {fps_display:.0f}", (x0 + 200, y2),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.42, COLORS["very_dim"], 1, cv2.LINE_AA)
-    if not is_stream and total_frames > 0:
-        y3 = y2 + 18
-        bar_x1 = x0
-        bar_x2 = x0 + panel_w - 30
-        bar_w = bar_x2 - bar_x1
-        progress = frame_num / total_frames
-        cv2.rectangle(img, (bar_x1, y3), (bar_x2, y3 + 4), COLORS["panel_border"], -1)
-        cv2.rectangle(img, (bar_x1, y3), (bar_x1 + int(bar_w * progress), y3 + 4),
-                      COLORS["accent"], -1)
-
-
 def draw_bbox(img, x1, y1, x2, y2, counted, conf):
     color = COLORS["bbox_counted"] if counted else COLORS["bbox"]
     corner_len = 8
@@ -154,7 +107,7 @@ def draw_bbox(img, x1, y1, x2, y2, counted, conf):
 def annotate_detections(frame, detections, objects, counted_ids, trails,
                         flash_events, roi_y, frame_num, total_count,
                         total_frames, is_stream, fps_display):
-    """Full-frame annotation: bboxes, trails, ROI line, flashes, dashboard."""
+    """Full-frame annotation: bboxes, trails, ROI line, flashes."""
     annotated = frame.copy()
     height, width = annotated.shape[:2]
 
@@ -191,10 +144,6 @@ def annotate_detections(frame, detections, objects, counted_ids, trails,
     for obj_id, (cx, cy) in objects.items():
         color = COLORS["counted"] if obj_id in counted_ids else COLORS["uncounted"]
         cv2.circle(annotated, (int(cx), int(cy)), 3, color, -1, cv2.LINE_AA)
-
-    tracker_total = max(len(objects), 0)
-    draw_dashboard(annotated, total_count, len(objects), tracker_total,
-                   frame_num, total_frames, is_stream, fps_display, width)
 
     if roi_y is not None:
         cv2.putText(annotated, "COUNTING LINE", (width - 200, roi_y - 8),
