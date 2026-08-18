@@ -5,36 +5,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends build-essential
 RUN pip install --no-cache-dir "cython>=3.0" setuptools
 WORKDIR /build
 COPY app/ app/
-RUN python - <<'PY'
-from setuptools import Extension, setup
-from Cython.Build import cythonize
-import glob
-import os
-ext = []
-for d in ("app/core", "app/routers"):
-    for p in glob.glob(f"{d}/*.py"):
-        b = os.path.splitext(os.path.basename(p))[0]
-        if b in ("__init__", "auth"):
-            continue
-        ext.append(Extension(d.replace("/", ".") + "." + b, [p]))
-setup(
-    ext_modules=cythonize(
-        ext,
-        nthreads=os.cpu_count() or 1,
-        compiler_directives={
-            "language_level": "3",
-            "binding": True,
-            "embedsignature": True,
-            "always_allow_keywords": True,
-            "annotation_typing": False,
-            "profile": False,
-            "linetrace": False,
-        },
-    ),
-    script_args=["build_ext", "--inplace"],
-)
-PY
-RUN find app -name '*.c' -delete \
+COPY cython_build.py .
+RUN python cython_build.py build_ext --inplace \
+    && find app -name '*.c' -delete \
     && for so in app/core/*.cpython-*.so app/routers/*.cpython-*.so; do \
         [ -e "$so" ] || continue; rm -f "${so%.cpython-*.so}.py"; \
     done \
