@@ -2,11 +2,10 @@
 FROM python:3.12-slim AS compiler
 RUN apt-get update && apt-get install -y --no-install-recommends build-essential \
     && rm -rf /var/lib/apt/lists/*
-RUN pip install --no-cache-dir "cython>=3.0"
+RUN pip install --no-cache-dir "cython>=3.0" setuptools
 WORKDIR /build
 COPY app/ app/
-RUN <<EOF
-python - <<'PY'
+RUN python - <<'PY'
 from setuptools import Extension, setup
 from Cython.Build import cythonize
 import glob
@@ -35,13 +34,11 @@ setup(
     script_args=["build_ext", "--inplace"],
 )
 PY
-find app -name '*.c' -delete
-for so in app/core/*.cpython-*.so app/routers/*.cpython-*.so; do
-    [ -e "$so" ] || continue
-    rm -f "${so%.cpython-*.so}.py"
-done
-rm -rf build app/core/__pycache__ app/__pycache__ app/routers/__pycache__
-EOF
+RUN find app -name '*.c' -delete \
+    && for so in app/core/*.cpython-*.so app/routers/*.cpython-*.so; do \
+        [ -e "$so" ] || continue; rm -f "${so%.cpython-*.so}.py"; \
+    done \
+    && rm -rf build app/core/__pycache__ app/__pycache__ app/routers/__pycache__
 
 FROM python:3.12-slim
 
